@@ -112,5 +112,16 @@ namespace ExcelApplication1
             }
 
         }
+
+        private int tableIdx;
+        public int TableIndex
+        {
+            get { return tableIdx; }
+            set
+            {
+                tableIdx = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("TableIndex"));
+            }
+        }
     }
 }

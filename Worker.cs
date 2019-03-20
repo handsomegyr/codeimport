@@ -14,7 +14,7 @@ namespace ExcelApplication1
 {
     public class Worker
     {
-
+        //private HashSet<string> codeSet = new HashSet<string>();
         public static bool merge(string selectedPath, List<ExcelFile> excelFileList,Settings settings ,System.ComponentModel.BackgroundWorker backgroundWorker)
         {
             // Start the search for primes and wait.
@@ -66,8 +66,14 @@ namespace ExcelApplication1
 
                             if (!string.IsNullOrEmpty(code))
                             {
-                                //writer.WriteLine("insert  into `iprize_code`(`_id`,`prize_id`,`code`,`pwd`,`is_used`,`start_time`,`end_time`,`__CREATE_TIME__`,`__MODIFY_TIME__`,`__REMOVED__`) values ('{0}','{1}','{2}','{3}',{4},'{5}','{6}','{7}','{8}',0);", _id, prize_id, code, pwd, is_used, start_time, end_time, __CREATE_TIME__, __MODIFY_TIME__);
-                                writer.WriteLine("insert  into `luckydraw_virtual_code`(`gift_id`,`code`,`is_activited`,`is_used`,`start_at`,`end_at`,`use_start_at`,`use_end_at`,`created_at`,`updated_at`) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');", prize_id, code, 1, is_used, start_time, end_time, start_time, end_time, __CREATE_TIME__, __MODIFY_TIME__);
+                                if(settings.TableIndex == 0)
+                                {
+                                    writer.WriteLine("insert  into `prize_code`(`prize_id`,`code`,`pwd`,`is_used`,`start_time`,`end_time`,`created_at`,`updated_at`) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}');",  prize_id, code, "", is_used, start_time, end_time, __CREATE_TIME__, __MODIFY_TIME__);
+                                }
+                                else if(settings.TableIndex == 1)
+                                {
+                                    writer.WriteLine("insert  into `luckydraw_virtual_code`(`gift_id`,`code`,`is_activited`,`is_used`,`start_at`,`end_at`,`use_start_at`,`use_end_at`,`created_at`,`updated_at`) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');", prize_id, code, 1, is_used, start_time, end_time, start_time, end_time, __CREATE_TIME__, __MODIFY_TIME__);
+                                }                                
                             }
                         }
 
@@ -106,8 +112,9 @@ namespace ExcelApplication1
             UTF8Encoding utf8 = new UTF8Encoding(false);
             var targetPath = settings.TargetPath;
             var writer = new StreamWriter(targetPath, false, utf8);
-            
-           
+
+            HashSet<string> codeSet = new HashSet<string>();
+
             try
             {
                 int i = 0;
@@ -129,7 +136,20 @@ namespace ExcelApplication1
                     {
                         //虚拟卡编号,虚拟卡密码,开始有效期,截止有效期,活动名称,奖品名称,是否使用,活动编号
                         //var _id =ObjectId.GenerateNewId().ToString();// 序号
-                        var code = GenerateCheckCode(settings.CodeLength);
+                        var code = "";
+                        for (int m = 0; m < 1; )
+                        {
+                            code = GenerateCheckCode(settings.CodeLength);
+                            code = code.ToLower();
+
+                            // 检查是否有重复
+                            if (!codeSet.Contains(code))
+                            {
+                                codeSet.Add(code);
+                                break;
+                            }
+                        }
+
                         //var pwd = "";
                         var start_time = settings.StartTime;
                         var end_time = settings.EndTime;
@@ -144,8 +164,21 @@ namespace ExcelApplication1
 
                         if (!string.IsNullOrEmpty(code))
                         {
-                            //writer.WriteLine("insert  into `iprize_code`(`_id`,`prize_id`,`code`,`pwd`,`is_used`,`start_time`,`end_time`,`__CREATE_TIME__`,`__MODIFY_TIME__`,`__REMOVED__`) values ('{0}','{1}','{2}','{3}',{4},'{5}','{6}','{7}','{8}',0);", _id, prize_id, code, pwd, is_used, start_time, end_time, __CREATE_TIME__, __MODIFY_TIME__);
-                            writer.WriteLine("insert  into `luckydraw_virtual_code`(`gift_id`,`code`,`is_activited`,`is_used`,`start_at`,`end_at`,`use_start_at`,`use_end_at`,`created_at`,`updated_at`) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');", prize_id, code, 1, is_used, start_time, end_time, start_time, end_time, __CREATE_TIME__, __MODIFY_TIME__);
+                            
+                            if (settings.TableIndex == 0)
+                            {
+                                writer.WriteLine("insert  into `prize_code`(`prize_id`,`code`,`pwd`,`is_used`,`start_time`,`end_time`,`created_at`,`updated_at`) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}');", prize_id, code, "", is_used, start_time, end_time, __CREATE_TIME__, __MODIFY_TIME__);
+                            }
+                            else if (settings.TableIndex == 1)
+                            {
+                                writer.WriteLine("insert  into `luckydraw_virtual_code`(`gift_id`,`code`,`is_activited`,`is_used`,`start_at`,`end_at`,`use_start_at`,`use_end_at`,`created_at`,`updated_at`) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');", prize_id, code, 1, is_used, start_time, end_time, start_time, end_time, __CREATE_TIME__, __MODIFY_TIME__);
+                            }
+                            else if (settings.TableIndex == 2)
+                            {
+                                writer.WriteLine("insert  into `exchange_code_consume`(`code`,`is_consumed`,`created_at`,`updated_at`) values ('{0}','{1}','{2}','{3}');", code, 0, __CREATE_TIME__, __MODIFY_TIME__);
+
+                            }
+
                         }
                     }
                     catch (Exception e1)

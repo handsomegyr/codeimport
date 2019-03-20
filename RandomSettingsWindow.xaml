@@ -39,5 +39,11 @@
         <TextBox Grid.Column="1" Height="23" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" Margin="14,6,11,0" x:Name="txtQuantity" VerticalAlignment="Top" Grid.Row="4" VerticalContentAlignment="Center" Text="0" />
         <TextBlock Height="23" HorizontalAlignment="Left" Margin="4,7,0,0" x:Name="textBlock11" Text="券长度：" VerticalAlignment="Top" Grid.Row="5" Width="49" />
         <TextBox Grid.Column="1" Height="23" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" Margin="14,5,11,0" x:Name="txtCodeLength" VerticalAlignment="Top" Grid.Row="5" VerticalContentAlignment="Center" Text="0" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="4,8,0,0" x:Name="tbTable" Text="券码表名：" VerticalAlignment="Top" Grid.Row="6" Width="60"  />
+        <ComboBox x:Name="cbbTable" Grid.Column="1" HorizontalAlignment="Left" Margin="14,8,0,0" Grid.Row="6" VerticalAlignment="Top" Width="311" Height="22">
+            <ComboBoxItem Content="prize_code" IsSelected="True"/>
+            <ComboBoxItem Content="luckydraw_virtual_code"/>
+            <ComboBoxItem Content="exchange_code_consume"/>
+        </ComboBox>
     </Grid>
 </Window>
